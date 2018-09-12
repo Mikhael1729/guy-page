@@ -86,7 +86,7 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
   }
 
   private getData() {
-    fetch("http://localhost:3000/api/Person?access_token=9mcF4hBvwLdgBiGwPAILnJ3wmjTEhOEsuZJui4Rnu5S8Mu2CgHswQ5HfhoCJfhuz")
+    fetch("http://localhost:3000/api/Person/1?access_token=DtQPd8cKqSNgR8p5CE3iljJsVZdY5DXuxEShZfCLGiDYFLEl5ekhmZa3F4Mac05e")
       .then((data: any) => {
         data.json().then((converted: any) => {
           console.log(converted);
