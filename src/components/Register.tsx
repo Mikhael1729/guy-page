@@ -1,6 +1,16 @@
 import * as React from 'react';
-import { TextField, createStyles, WithStyles, Grid, FormControl } from '@material-ui/core';
-import { withStyles, Theme } from '@material-ui/core/styles';
+import user_image from 'images/user.png';
+import {
+  createStyles,
+  FormControl,
+  Grid,
+  TextField,
+  WithStyles,
+  Avatar
+  } from '@material-ui/core';
+import { Theme, withStyles } from '@material-ui/core/styles';
+import * as Styles from "styles/Register.css";
+import classnames from "classnames";
 
 // #region Styles
 const styles = ({ spacing }: Theme) => createStyles({
@@ -34,17 +44,29 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
 
     this.onChangeEmail= this.onChangeEmail.bind(this);
     this.onChangePassword = this.onChangePassword.bind(this);
+    this.onchangeRepeatedPassword = this.onchangeRepeatedPassword.bind(this);
   }
 
   public render() {
     const classes = this.props.classes;
 
     return (
-      <div>
+      <div className={Styles.container}>
+
+        <Avatar 
+          src={user_image}
+          style={{  
+            textAlign: "center",
+            alignSelf: "center",
+            width: "100px",
+            height: "100px"
+          }}/>
+
         <h1>Register</h1>
+
         <FormControl fullWidth={true}>
           <TextField 
-            id="email"
+            id="email_textField"
             label="Email"
             fullWidth={true}
             value={this.state.email}
@@ -52,7 +74,7 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
             margin="normal"/>
 
           <TextField 
-            id="password"
+            id="password_textField"
             fullWidth={true}
             label="Password"
             type="password"
@@ -61,12 +83,12 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
             margin="normal"/>
 
            <TextField 
-            id="password"
+            id="repeatedPassword_textField"
             fullWidth={true}
             label="Password"
             type="password"
             onChange={this.onchangeRepeatedPassword}
-            value={this.state.password}
+            value={this.state.repeatedPassword}
             margin="normal"/>
           </FormControl>
       </div>
@@ -86,12 +108,12 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
   }
 
   private getData() {
-    fetch("http://localhost:3000/api/Person/1?access_token=DtQPd8cKqSNgR8p5CE3iljJsVZdY5DXuxEShZfCLGiDYFLEl5ekhmZa3F4Mac05e")
+    fetch("http://localhost:3000/api/Person/1?access_token=U6CxKEHXnkS5CHiqqKV9Z0WEY5uMa1xLirtwpK3J7E2cVaBBnC3JFICJdBGqhGni")
       .then((data: any) => {
         data.json().then((converted: any) => {
           console.log(converted);
         })
-      })
+      });
   }
 }
 
