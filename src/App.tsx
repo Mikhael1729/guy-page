@@ -10,8 +10,10 @@ import Register from "components/Register";
 import Login from "components/Login";
 import Profile from "components/Profile";
 import { withHistory } from "./components/WithHistory";
-import { Person as PersonModel} from "models/Person";
- // tslint:disable:jsx-no-lambda
+import { Person as PersonModel, Person} from "models/Person";
+import { Home } from "./components/Home";
+// tslint:disable:variable-name
+// tslint:disable:jsx-no-lambda
 
 interface IAppState {
   currentUser: PersonModel;
@@ -25,27 +27,26 @@ class App extends React.Component<any, IAppState> {
     super(props);
 
     const stored: PersonModel = JSON.parse(sessionStorage.getItem("person") || '{}');
-
     this.state = {
-      currentUser: stored
+      currentUser: stored 
     };
-
-    // Header buttons.
-    this.headerButtons = [
-      { component: Register, exactLink: true, label: "Register", link: "/register" },
-      { component: Login, exactLink: true, label: "Login", link: "/login" },
-    ];
-
-    // Only routes.
-    this.onlyRoutes = [
-      { component: Profile, exactLink: true, label: "Profile", link: "/profile"}
-    ]
 
     // Bindings.
     this.logIn = this.logIn.bind(this);
+    this.logOut = this.logOut.bind(this);
+    this.showOrHideNavBarElements = this.showOrHideNavBarElements.bind(this);
+
+    // Bar elements and routes.
+    this.showOrHideNavBarElements();
+
+    // Only routes.
+    this.onlyRoutes = [
+      { component: Home, exactLink: true, label: "Home", link: "/", onClick: this.logOut}
+    ]
   }
 
   public render() {
+    this.showOrHideNavBarElements();
     const routes = [...this.onlyRoutes, ...this.headerButtons];
 
     return (
@@ -63,15 +64,19 @@ class App extends React.Component<any, IAppState> {
                 <Grid item={true} xs={12}>
                   <Switch>
                   {
-                    routes.map((r, index) => (
+                    routes.map((r, index) => {
+                      const h = 0;
+                      return (
                         <Route 
                           key={index}
                           exact={r.exactLink}
                           path={r.link}
                           render={({history}) => {
-                            // tslint:disable-next-line:variable-name
+                            // 
                             const Component = withHistory(r.component, history);
 
+                            /* Adding specific properties */
+                            
                             if(r.link==="/login") {
                               return <Component updateCurrentPerson={this.logIn}/>
                             }
@@ -81,7 +86,7 @@ class App extends React.Component<any, IAppState> {
 
                             return <Component />
                           }}/>
-                     ))
+                     )})
                   }
                   </Switch>
                 </Grid>
@@ -93,10 +98,35 @@ class App extends React.Component<any, IAppState> {
     );
   }
 
+  private showOrHideNavBarElements() {
+    const register:IHeaderButton = { component: Register, exactLink: true, label: "Register", link: "/register" };
+    const login: IHeaderButton = { component: Login, exactLink: true, label: "Login", link: "/login" };
+    const profile: IHeaderButton = { component: Profile, exactLink: true, label: "Profile", link: "/profile"};
+    const logout: IHeaderButton = { component: <h1>h</h1>, exactLink: true, label: "Log out", link: "/", onClick: this.logOut};
+
+    // Header buttons.
+    this.headerButtons = [];
+
+    if (this.state.currentUser.token) {
+      this.headerButtons.push(profile);
+      this.headerButtons.push(logout);
+    } else {
+      this.headerButtons.push(login);
+      this.headerButtons.push(register);
+    }
+  }
+
   private logIn(person: PersonModel) {
     // Storing person session.
     sessionStorage.setItem("person", JSON.stringify(person));
     this.setState({ currentUser: person });
+    console.log(this.state.currentUser);
+    console.log(person);
+  }
+
+  private logOut() {
+    sessionStorage.clear();
+    this.setState({ currentUser: new Person({})});
   }
 }
 
