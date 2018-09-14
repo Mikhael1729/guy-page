@@ -8,34 +8,44 @@ import Header from "components/Header";
 import { IHeaderButton } from "models/HeaderButton";
 import Register from "components/Register";
 import Login from "components/Login";
+import Profile from "components/Profile";
+import { withHistory } from "./components/WithHistory";
+import { Person } from "models/Person";
  // tslint:disable:jsx-no-lambda
 
-// #region Styles
-const styles = ({ palette }: Theme) => createStyles({
-  badge: {
-    top: 1,
-    right: -15,
-    // The border color match the background color.
-    border: `2px solid ${
-      palette.type === 'light' ? palette.grey[200] : palette.grey[900]
-    }`,
-  }
-});
-// #endregion
+interface IAppState {
+  currentUser: Person;
+}
 
-class App extends React.Component<any, any> {
+class App extends React.Component<any, IAppState> {
   private headerButtons: IHeaderButton[];
+  private onlyRoutes: IHeaderButton[];
 
   constructor(props: any) {
     super(props);
 
+    this.state = {
+      currentUser: new Person({})
+    };
+
+    // Header buttons.
     this.headerButtons = [
-      { component: <Register />, exactLink: true, label: "Register", link: "/register" },
-      { component: <Login />, exactLink: true, label: "Login", link: "/login" },
+      { component: Register, exactLink: true, label: "Register", link: "/register" },
+      { component: Login, exactLink: true, label: "Login", link: "/login" },
+    ];
+
+    // Only routes.
+    this.onlyRoutes = [
+      { component: Profile, exactLink: true, label: "Profile", link: "/profile"}
     ]
+
+    // Bindings.
+    this.logIn = this.logIn.bind(this);
   }
 
   public render() {
+    const routes = [...this.onlyRoutes, ...this.headerButtons];
+
     return (
       <BrowserRouter>
         <Fragment>
@@ -51,12 +61,24 @@ class App extends React.Component<any, any> {
                 <Grid item={true} xs={12}>
                   <Switch>
                   {
-                    this.headerButtons.map((r, index) => (
+                    routes.map((r, index) => (
                         <Route 
                           key={index}
                           exact={r.exactLink}
                           path={r.link}
-                          render={() => r.component}/>
+                          render={({history}) => {
+                            // tslint:disable-next-line:variable-name
+                            const Component = withHistory(r.component, history);
+
+                            if(r.link==="/login") {
+                              return <Component updateCurrentPerson={this.logIn}/>
+                            }
+                            else if (r.link==="/profile") {
+                              return <Component email={this.state.currentUser.email}/>
+                            }
+
+                            return <Component />
+                          }}/>
                      ))
                   }
                   </Switch>
@@ -68,6 +90,10 @@ class App extends React.Component<any, any> {
       </BrowserRouter>
     );
   }
+
+  private logIn(user: Person) {
+    this.setState({ currentUser: user });
+  }
 }
 
-export default withStyles(styles)(App);
+export default App;
