@@ -68,6 +68,7 @@ class Header extends React.Component<IHeaderProps> {
                           key={index} 
                           color="inherit" 
                           component={link} 
+                          onClick={b.onClick}
                           children={b.label}/>
                       );
                     })
