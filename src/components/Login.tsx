@@ -111,10 +111,7 @@ export default class Login extends React.Component<ILoginProps, ILoginState> {
         person.id = res.userId;
         
         console.log(person);
-        
-        // Storing person session.
-        sessionStorage.setItem("person", JSON.stringify(person));
-
+     
         // Updating global object.
         this.props.updateCurrentPerson(person);
 

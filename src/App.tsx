@@ -10,11 +10,11 @@ import Register from "components/Register";
 import Login from "components/Login";
 import Profile from "components/Profile";
 import { withHistory } from "./components/WithHistory";
-import { Person } from "models/Person";
+import { Person as PersonModel} from "models/Person";
  // tslint:disable:jsx-no-lambda
 
 interface IAppState {
-  currentUser: Person;
+  currentUser: PersonModel;
 }
 
 class App extends React.Component<any, IAppState> {
@@ -24,8 +24,10 @@ class App extends React.Component<any, IAppState> {
   constructor(props: any) {
     super(props);
 
+    const stored: PersonModel = JSON.parse(sessionStorage.getItem("person") || '{}');
+
     this.state = {
-      currentUser: new Person({})
+      currentUser: stored
     };
 
     // Header buttons.
@@ -91,8 +93,10 @@ class App extends React.Component<any, IAppState> {
     );
   }
 
-  private logIn(user: Person) {
-    this.setState({ currentUser: user });
+  private logIn(person: PersonModel) {
+    // Storing person session.
+    sessionStorage.setItem("person", JSON.stringify(person));
+    this.setState({ currentUser: person });
   }
 }
 
