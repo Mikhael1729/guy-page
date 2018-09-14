@@ -5,6 +5,7 @@ export interface IPerson {
     email?: string;
     password?: string;
     name?: string;
+    token?: string; 
 }
 export interface Person extends IPerson { }
 
