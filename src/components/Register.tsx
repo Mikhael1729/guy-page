@@ -43,8 +43,6 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
       repeatedPassword: ""
     };
 
-    this.getData();
-
     this.onChangeEmail= this.onChangeEmail.bind(this);
     this.onChangePassword = this.onChangePassword.bind(this);
     this.onchangeRepeatedPassword = this.onchangeRepeatedPassword.bind(this);
@@ -138,15 +136,6 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
 
   private onchangeRepeatedPassword (e: any) {
     this.setState({ repeatedPassword: e.target.value });
-  }
-
-  private getData() {
-    fetch("http://localhost:3000/api/Person/1?access_token=U6CxKEHXnkS5CHiqqKV9Z0WEY5uMa1xLirtwpK3J7E2cVaBBnC3JFICJdBGqhGni")
-      .then((data: any) => {
-        data.json().then((converted: any) => {
-          console.log(converted);
-        })
-      });
   }
 }
 

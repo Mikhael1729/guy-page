@@ -99,7 +99,7 @@ export default class Login extends React.Component<ILoginProps, ILoginState> {
     fetch(`http://localhost:3000/api/Person/login`, {
       method: "POST",
       body: JSON.stringify(person),
-      headers: {
+      headers: {  
         "Content-type": "application/json"
       }
     }) 
