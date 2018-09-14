@@ -6,11 +6,13 @@ import {
   Grid,
   TextField,
   WithStyles,
-  Avatar
+  Avatar,
+  Button
   } from '@material-ui/core';
 import { Theme, withStyles } from '@material-ui/core/styles';
 import * as Styles from "styles/Register.css";
 import classnames from "classnames";
+import { Person } from "models/Person";
 
 // #region Styles
 const styles = ({ spacing }: Theme) => createStyles({
@@ -22,6 +24,7 @@ const styles = ({ spacing }: Theme) => createStyles({
 
 // #endregion
 export interface IRegisterProps extends WithStyles<typeof styles> {
+  history?: any;
 }
 
 export interface IRegisterState {
@@ -45,6 +48,7 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
     this.onChangeEmail= this.onChangeEmail.bind(this);
     this.onChangePassword = this.onChangePassword.bind(this);
     this.onchangeRepeatedPassword = this.onchangeRepeatedPassword.bind(this);
+    this.handlerRegister = this.handlerRegister.bind(this);
   }
 
   public render() {
@@ -90,9 +94,38 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
             onChange={this.onchangeRepeatedPassword}
             value={this.state.repeatedPassword}
             margin="normal"/>
+
+            <Button 
+              style={{ marginTop: "20px" }}
+              color="primary" 
+              variant="contained"
+              children="Register"
+              onClick={this.handlerRegister}/>
           </FormControl>
       </div>
     );
+  }
+
+  private handlerRegister() {
+    if (this.state.password === this.state.repeatedPassword) {
+      // Creating person.
+      const person = new Person({
+        email: this.state.email,
+        password: this.state.password 
+      });
+
+      // Add person into database.
+      fetch("http://localhost:3000/api/Person", {
+        method: "POST",
+        body: JSON.stringify(person),
+        headers: {
+          "Content-type": "application/json"
+        }
+      })
+        .then(res => console.log(res))
+        .catch(error => console.error(error))
+        .then(response => console.log("success", response))
+    }
   }
 
   private onChangeEmail (e: any) {
