@@ -96,8 +96,9 @@ export default class Login extends React.Component<ILoginProps, ILoginState> {
       password: this.state.password
     });
 
-    fetch(`http://localhost:3000/api/Person/2?access_token=AFqLttYhjWOd8ICumED414YyDCAuNkx2d4PFc7wApnEiGEY5eav9dFXGqIebaw4l&filter={"where":{"email":"${person.email}"}}`, {
-      method: "GET",
+    fetch(`http://localhost:3000/api/Person/login`, {
+      method: "POST",
+      body: JSON.stringify(person),
       headers: {
         "Content-type": "application/json"
       }
@@ -105,7 +106,10 @@ export default class Login extends React.Component<ILoginProps, ILoginState> {
       .then(res => res.json())
       .then(res => {
         // tslint:disable-next-line:no-shadowed-variable
-        const person: Person = res;
+        
+        person.token = res.id;
+        person.id = res.userId;
+        
         console.log(person);
         
         this.props.updateCurrentPerson(person);
