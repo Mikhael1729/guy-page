@@ -106,21 +106,19 @@ export default class Login extends React.Component<ILoginProps, ILoginState> {
       .then(res => res.json())
       .then(res => {
         // tslint:disable-next-line:no-shadowed-variable
-        
-        person.token = res.id;
-        person.id = res.userId;
-        
-        console.log(person);
-     
-        // Updating global object.
-        this.props.updateCurrentPerson(person);
-
-        // Traveling to the next page.
-        this.props.history.push("/profile");
+        if(!res.error) {
+          person.token = res.id;
+          person.id = res.userId;
+       
+          // Updating global object.
+          this.props.updateCurrentPerson(person);
+  
+          // Traveling to the next page.
+          this.props.history.push("/profile");
+        } else {
+          console.log("error");
+        }
       })
-      .catch(error => console.error(error));
-    
-
   }
 }
 

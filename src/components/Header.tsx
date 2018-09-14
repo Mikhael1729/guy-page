@@ -47,6 +47,7 @@ class Header extends React.Component<IHeaderProps> {
   public render() {
     // Classes
     const classes = this.props.classes;
+    const homeLink = (props:any) => <Link to="/" {...props} />;
 
     return (
       <div style={{ flexGrow: 1 }}>
@@ -54,7 +55,11 @@ class Header extends React.Component<IHeaderProps> {
             <Toolbar>
 
               {/* Title Bar */}
-              <Typography variant="title" color="inherit" style={{ flexGrow: 1 }}>
+              <Typography 
+                variant="title" 
+                color="inherit" 
+                style={{ flexGrow: 1, textDecoration: "none"}} 
+                component={homeLink}>
                 {this.props.title}
               </Typography>
              
