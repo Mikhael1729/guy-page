@@ -24,58 +24,67 @@ const styles = ({ spacing }: Theme) => createStyles({
     },
 });
 
-interface IClisntListProps extends WithStyles<typeof styles>{
-    clients?: ClientModel[];
+interface IClientListProps extends WithStyles<typeof styles>{
+    clients: ClientModel[];
 }
 
-let id = 0;
-function createData(name: any, calories: any, fat: any, carbs: any, protein: any) {
-  id += 1;
-  return { id, name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
-const ClientList: React.SFC<IClisntListProps> = (props) => {
+const ClientList: React.SFC<IClientListProps> = (props) => {
     const classes = props.classes;
+
     return (
         <Fragment>
             <Paper className={classes.root}>
                 <Table className={classes.table}>
                     <TableHead>
-                    <TableRow>
-                        <TableCell>Dessert (100g serving)</TableCell>
-                        <TableCell numeric={true}>Calories</TableCell>
-                        <TableCell numeric={true}>Fat (g)</TableCell>
-                        <TableCell numeric={true}>Carbs (g)</TableCell>
-                        <TableCell numeric={true}>Protein (g)</TableCell>
-                    </TableRow>
+                        <TableRow>
+                            <TableCell>Name</TableCell>
+                            <TableCell>Lastname</TableCell>
+                            <TableCell>Email</TableCell>
+                            <TableCell>Age</TableCell>
+                            <TableCell>Is public</TableCell>
+                        </TableRow>
                     </TableHead>
                     <TableBody>
-                    {rows.map(row => {
-                        return (
-                        <TableRow key={row.id}>
-                            <TableCell component="th" scope="row">
-                            {row.name}
-                            </TableCell>
-                            <TableCell numeric={true}>{row.calories}</TableCell>
-                            <TableCell numeric={true}>{row.fat}</TableCell>
-                            <TableCell numeric={true}>{row.carbs}</TableCell>
-                            <TableCell numeric={true}>{row.protein}</TableCell>
-                        </TableRow>
-                        );
-                    })}
+                    {
+                        props.clients.map(client => {
+                            return (
+                                <TableRow key={client.id}>
+                                    <TableCell component="th" scope="row"><div>{client.name}</div></TableCell>
+                                    <TableCell><div>{client.lastname}</div></TableCell>
+                                    <TableCell><div>{client.email}</div></TableCell>
+                                    <TableCell><div>{getAge(client.birthDate!)}</div></TableCell>
+                                    <TableCell><div>{client.public!.toString()}</div></TableCell>
+                                </TableRow>
+                            );
+                        })
+                    }
                     </TableBody>
                 </Table>
             </Paper>
         </Fragment>
     );
 };
+
+function getAge(date: Date): number {
+    // Birthdate 
+    const birthdate_day = date.getDate();
+    const birthdate_month = date.getMonth();
+    
+    // Today.
+    const today = new Date();
+    const today_day = today.getDate();
+    const today_month = today.getMonth();
+
+    // Age.
+    let age = today.getFullYear() - date.getFullYear();
+
+    if ( (today_month > birthdate_month) && (today_day > birthdate_day) ) {
+        age += 1;
+    } else if ( (today_month < birthdate_month) && (today_day < birthdate_day)) {
+        age -= 1;
+    }
+
+    return age;
+}
 
 export default withStyles(styles)(ClientList);

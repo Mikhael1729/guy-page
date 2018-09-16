@@ -1,38 +1,71 @@
 import * as React from 'react';
-import QuantityCard from "./QuantityCard";
-import { Grid } from '@material-ui/core';
 import ClientList from './ClientList';
+import QuantityCard from './QuantityCard';
+import { Grid } from '@material-ui/core';
+import { Client as ClientModel } from "models/Client";
 // tslint:disable:variable-name
 
-interface IHomeProps {
+export interface IHomeProps {
 }
 
-export const Home: React.SFC<IHomeProps> = (props) => {
-  return(
-      <React.Fragment>
-        <h1>Home</h1>
+export interface IHomeState {
+    clients: ClientModel[];
+}
 
-        {/* Clients quantities */}
-        <Grid container={true} justify="space-between">
-            <Grid item={true} xs={6}>
-                <QuantityCard 
-                    title="My clients quantity" 
-                    backgroundColor="#E6E6E6"
-                    quantity={12}/>
-            </Grid>
+export class Home extends React.Component<IHomeProps, IHomeState> {
+    constructor(props: IHomeProps) {
+        super(props);
 
-            <Grid item={true} xs={6}>
-                <QuantityCard 
-                    title="My clients quantity" 
-                    backgroundColor="#F0F0F0"
-                    quantity={12}/>
-            </Grid>
-        </Grid>
+        this.state = {
+            clients: this.generateClients()
+        }
+    }
 
-        {/* My client list */}
-        <ClientList />
-        <ClientList />
+    public render() {
+        return (
+            <React.Fragment>
+                <h1>Home</h1>
 
-      </React.Fragment>
-  ) ;
-};
+                {/* Clients quantities */}
+                <Grid container={true} justify="space-between">
+                    <Grid item={true} xs={6}>
+                        <QuantityCard 
+                            title="My clients quantity" 
+                            backgroundColor="#E6E6E6"
+                            quantity={12}/>
+                    </Grid>
+
+                    <Grid item={true} xs={6}>
+                        <QuantityCard 
+                            title="My clients quantity" 
+                            backgroundColor="#F0F0F0"
+                            quantity={12}/>
+                    </Grid>
+                </Grid>
+
+                {/* My client list */}
+                <ClientList clients={this.state.clients}/>
+
+            </React.Fragment>
+    );
+  }
+
+  private generateClients() : ClientModel[]{
+    const clients: ClientModel[] = [];
+
+    for(let i = 0; i < 15; i++) {
+        const client = new ClientModel({
+            birthDate: new Date(2000 + i, i <= 12 ? i : i - (i-1), i),
+            email: `user${i}@email.com`,
+            id: i,
+            lastname: `Lastname${i}`,
+            name: `User${i}`,
+            public: i % 2 === 0 ? true : false
+        });
+
+        clients.push(client);
+    }
+
+    return clients;
+  }
+}

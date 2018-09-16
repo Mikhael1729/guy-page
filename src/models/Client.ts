@@ -1,7 +1,7 @@
 import { init } from "helpers/Init";
 
 export interface IClient {
-    id?: string;
+    id?: number;
     name?: string;
     email?: string;
     lastname?: string;
