@@ -2,7 +2,9 @@ import * as React from 'react';
 import ClientList from './ClientList';
 import QuantityCard from './QuantityCard';
 import { Grid } from '@material-ui/core';
-import { Client as ClientModel } from "models/Client";
+import { Client as ClientModel, Client } from "models/Client";
+import { InstancesLocator } from "helpers/InstancesLocator";
+import { ClientService } from "data/services/ClientService";
 // tslint:disable:variable-name
 
 export interface IHomeProps {
@@ -13,12 +15,20 @@ export interface IHomeState {
 }
 
 export class Home extends React.Component<IHomeProps, IHomeState> {
+    private readonly clientService: ClientService = InstancesLocator.getInstance().clientService;
+
     constructor(props: IHomeProps) {
         super(props);
-
+        
         this.state = {
-            clients: this.generateClients()
+            clients: []
         }
+    }
+
+    public componentWillMount() {
+        this.getAllClients().then(res => {
+            this.setState({ clients: res })
+        });
     }
 
     public render() {
@@ -47,25 +57,31 @@ export class Home extends React.Component<IHomeProps, IHomeState> {
                 <ClientList clients={this.state.clients}/>
 
             </React.Fragment>
-    );
-  }
-
-  private generateClients() : ClientModel[]{
-    const clients: ClientModel[] = [];
-
-    for(let i = 0; i < 15; i++) {
-        const client = new ClientModel({
-            birthDate: new Date(2000 + i, i <= 12 ? i : i - (i-1), i),
-            email: `user${i}@email.com`,
-            id: i,
-            lastname: `Lastname${i}`,
-            name: `User${i}`,
-            public: i % 2 === 0 ? true : false
-        });
-
-        clients.push(client);
+        );
     }
 
-    return clients;
-  }
+    private async getAllClients (): Promise<ClientModel[]>{
+        const clients: ClientModel[] = (await this.clientService.getAll());
+        console.log(clients);
+        return clients;
+    }
+
+    private generateClients() : ClientModel[]{
+        const clients: ClientModel[] = [];
+
+        for(let i = 0; i < 15; i++) {
+            const client = new ClientModel({
+                birthdate: (2000 + i + i <= 12 ? i : i - (i-1) + i).toString(),
+                email: `user${i}@email.com`,
+                id: i,
+                lastname: `Lastname${i}`,
+                name: `User${i}`,
+                public: i % 2 === 0 ? true : false
+            });
+
+            clients.push(client);
+        }
+
+        return clients;
+    }
 }
