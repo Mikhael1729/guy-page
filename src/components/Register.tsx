@@ -13,6 +13,8 @@ import { Theme, withStyles } from '@material-ui/core/styles';
 import * as Styles from "styles/Register.css";
 import classnames from "classnames";
 import { Person } from "models/Person";
+import { InstancesLocator } from "helpers/InstancesLocator";
+import { PersonService } from "data/services/PersonService";
 
 // #region Styles
 const styles = ({ spacing }: Theme) => createStyles({
@@ -34,6 +36,8 @@ export interface IRegisterState {
 }
 
 class Register extends React.Component<IRegisterProps, IRegisterState> {
+  private readonly personService = InstancesLocator.getInstance().personService;
+
   constructor(props: IRegisterProps) {
     super(props);
 
@@ -114,16 +118,10 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
       });
 
       // Add person into database.
-      fetch("http://localhost:3000/api/Person", {
-        method: "POST",
-        body: JSON.stringify(person),
-        headers: {
-          "Content-type": "application/json"
-        }
-      })
-        .then(res => console.log(res))
-        .catch(error => console.error(error))
-        .then(response => console.log("success", response))
+      this.personService.add(person).then(response => {
+        console.log(response);
+        this.props.history.push('/login');
+      });
     }
   }
 

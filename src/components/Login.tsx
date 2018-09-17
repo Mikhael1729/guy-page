@@ -13,6 +13,8 @@ import { Theme, withStyles } from '@material-ui/core/styles';
 import * as Styles from "styles/Register.css";
 import classnames from "classnames";
 import { Person } from "models/Person";
+import { InstancesLocator } from "helpers/InstancesLocator";
+import { PersonService } from "data/services/PersonService";
 
 export interface ILoginProps {
   history?: any;
@@ -25,6 +27,8 @@ export interface ILoginState {
 }
 
 export default class Login extends React.Component<ILoginProps, ILoginState> {
+  private readonly personService: PersonService = InstancesLocator.getInstance().personService;
+
   constructor(props: ILoginProps) {
     super(props);
 
@@ -97,29 +101,18 @@ export default class Login extends React.Component<ILoginProps, ILoginState> {
       password: this.state.password
     });
 
-    fetch(`http://localhost:3000/api/Person/login`, {
-      method: "POST",
-      body: JSON.stringify(person),
-      headers: {  
-        "Content-type": "application/json"
-      }
-    }) 
-      .then(res => res.json())
-      .then(res => {
-        // tslint:disable-next-line:no-shadowed-variable
-        if(!res.error) {
-          person.token = res.id;
-          person.id = res.userId;
-       
-          // Updating global object.
-          this.props.updateCurrentPerson(person);
+    this.personService.logIn(person).then(response => {
+      person.token = response.id;
+      person.id = response.userId;
+
+      console.log(person);
+
+      // Updating global object.
+      this.props.updateCurrentPerson(person);
   
-          // Traveling to the next page.
-          this.props.history.push("/profile");
-        } else {
-          console.log("error");
-        }
-      })
+      // Traveling to the next page.
+      this.props.history.push("/profile");
+    })
   }
 }
 
