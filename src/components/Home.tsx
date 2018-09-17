@@ -13,6 +13,8 @@ export interface IHomeProps {
 
 export interface IHomeState {
     clients: ClientModel[];
+    myClients: ClientModel[];
+    publicClients: ClientModel[];
     clientsCount: number;
     myClientsCount: number;
 }
@@ -26,20 +28,29 @@ export class Home extends React.Component<IHomeProps, IHomeState> {
         this.state = {
             clients: [],
             myClientsCount: 0,
-            clientsCount: 0
+            clientsCount: 0,
+            myClients: [],
+            publicClients: []
         }
 
         this.clientService.count().then(response => console.log(response.count));
     }
 
     public componentWillMount() {
-        this.getAllClients().then(c => {
-            this.getAllClientsCount().then(c1 => {
-                this.getMyClients().then(c2 => {
-                    this.setState({ clients: c, clientsCount:c1, myClientsCount: c2 });
+        this.getPublicClients().then(publicClients => {
+            this.getMyClients().then(myClients => {
+                this.getAllClientsCount().then(clientsCount => {
+
+                    this.setState({ 
+                        clients: myClients, 
+                        clientsCount, 
+                        myClientsCount: myClients.length, 
+                        publicClients 
+                    });
+
                 })  
             })
-        });
+        })
     }
 
     public render() {
@@ -74,38 +85,20 @@ export class Home extends React.Component<IHomeProps, IHomeState> {
         );
     }
 
-    private async getAllClients (): Promise<ClientModel[]>{
-        const clients: ClientModel[] = (await this.clientService.getAll());
+    private async getPublicClients (): Promise<ClientModel[]>{
+        const clients: ClientModel[] = (await this.clientService.getClientsByFilter(`{"personId":"${this.props.currentUserId}"}`));
         console.log(clients);
         return clients;
     }
 
-    private async getAllClientsCount () : Promise<number> {
-        const count: number = (await this.clientService.count()).count;
-        return count;
+    private async getMyClients () : Promise<ClientModel[]> {
+        const clients: ClientModel[] = (await this.clientService.getClientsByPersonId(this.props.currentUserId));
+        console.log(clients, this.props.currentUserId);
+        return clients;
     }
 
-    private async getMyClients (): Promise<number> {
+    private async getAllClientsCount (): Promise<number> {
         const count: number = (await this.clientService.countByPersonId(this.props.currentUserId)).count;
         return count;
-    }
-
-    private generateClients() : ClientModel[]{
-        const clients: ClientModel[] = [];
-
-        for(let i = 0; i < 15; i++) {
-            const client = new ClientModel({
-                birthdate: (2000 + i + i <= 12 ? i : i - (i-1) + i).toString(),
-                email: `user${i}@email.com`,
-                id: i,
-                lastname: `Lastname${i}`,
-                name: `User${i}`,
-                public: i % 2 === 0 ? true : false
-            });
-
-            clients.push(client);
-        }
-
-        return clients;
     }
 }

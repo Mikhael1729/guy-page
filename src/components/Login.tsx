@@ -96,23 +96,25 @@ export default class Login extends React.Component<ILoginProps, ILoginState> {
   }
 
   private handlerLogin() {
-    const person = new Person({
-      email: this.state.email,
-      password: this.state.password
-    });
-
-    this.personService.logIn(person).then(response => {
-      person.token = response.id;
-      person.id = response.userId;
-
-      console.log(person);
-
-      // Updating global object.
-      this.props.updateCurrentPerson(person);
+    if (this.state.password.length > 0 && this.state.email.length > 0) {
+      const person = new Person({
+        email: this.state.email,
+        password: this.state.password
+      });
   
-      // Traveling to the next page.
-      this.props.history.push("/");
-    })
+      this.personService.logIn(person).then(response => {
+        person.token = response.id;
+        person.id = response.userId;
+  
+        console.log(person);
+  
+        // Updating global object.
+        this.props.updateCurrentPerson(person);
+    
+        // Traveling to the next page.
+        this.props.history.push("/");
+      })
+    }
   }
 }
 

@@ -16,7 +16,7 @@ export class PersonService extends BaseRepository<Person> implements IPersonServ
             }
         }).then(response => {
             if (!response.ok) {
-              throw new Error(response.statusText)
+                return new Error(response.statusText)
             }
             return response.json()
         })

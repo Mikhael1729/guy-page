@@ -52,7 +52,7 @@ const ClientList: React.SFC<IClientListProps> = (props) => {
                                     <TableCell component="th" scope="row"><div>{client.name}</div></TableCell>
                                     <TableCell><div>{client.lastname}</div></TableCell>
                                     <TableCell><div>{client.email}</div></TableCell>
-                                    <TableCell><div>{client.birthdate ? getAge(client.birthdate) : null}</div></TableCell>
+                                    <TableCell><div>{client.birthdate ? getAge(new Date(client.birthdate)) : null}</div></TableCell>
                                     <TableCell><div>{client.public!.toString()}</div></TableCell>
                                 </TableRow>
                             );
@@ -65,27 +65,10 @@ const ClientList: React.SFC<IClientListProps> = (props) => {
     );
 };
 
-function getAge(date: string): number {
-    // Birthdate 
-    const birthdate = date.split('-');
-    const birthdate_day = parseInt(birthdate[0], 10);
-    const birthdate_month = parseInt(birthdate[1], 10)
-    
-    // Today.
-    const today = new Date();
-    const today_day = today.getDate();
-    const today_month = today.getMonth();
-
-    // Age.
-    let age = today.getFullYear() - parseInt(birthdate[2], 10);
-
-    if ( (today_month > birthdate_month) && (today_day > birthdate_day) ) {
-        age += 1;
-    } else if ( (today_month < birthdate_month) && (today_day < birthdate_day)) {
-        age -= 1;
-    }
-
-    return age;
+function getAge(date: Date): number {
+    const ageDifMs = Date.now() - date.getTime();
+    const ageDate = new Date(ageDifMs); // miliseconds from epoch
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
 
 export default withStyles(styles)(ClientList);

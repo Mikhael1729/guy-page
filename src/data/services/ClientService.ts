@@ -15,7 +15,7 @@ export class ClientService extends BaseRepository<Client> implements IClientServ
             }
         }).then(response => {
             if(!response.ok) {
-                throw new Error(response.statusText);
+                return new Error(response.statusText)
             }
             return response.json()
         })
@@ -29,7 +29,35 @@ export class ClientService extends BaseRepository<Client> implements IClientServ
             }
         }).then(response => {
             if(!response.ok) {
-                throw new Error(response.statusText);
+                return new Error(response.statusText)
+            }
+            return response.json()
+        })
+    }
+
+    public getClientsByPersonId(personId: number): Promise<Client[]> {
+        return fetch(this._context + `?filter={"where":{"personId":"${personId}"}}`, {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }).then(response => {
+            if(!response.ok) {
+                return new Error(response.statusText)
+            }
+            return response.json()
+        })
+    }
+
+    public getClientsByFilter(filter: string): Promise<Client[]> {
+        return fetch(this._context + `?filter={"where":${filter}}`, {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }).then(response => {
+            if(!response.ok) {
+                return new Error(response.statusText)
             }
             return response.json()
         })

@@ -89,6 +89,9 @@ class App extends React.Component<any, IAppState> {
                                 return <Redirect to={{ pathname: '/login' }} />
                               }
                             }
+                            else if (r.link ==="/addclient") {
+                              return <Component currentUserId={this.state.currentUser.id}/>
+                            }
 
                             return <Component />
                           }}/>
