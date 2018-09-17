@@ -36,7 +36,18 @@ export class BaseRepository<T> implements IRepository<T>{
     }
 
     public add(entity: T): Promise<T> {
-        throw new Error("Method not implemented.");
+        return fetch(this._context, {
+            method: 'POST',
+            body: JSON.stringify(entity),
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }).then(response => {
+            if (!response.ok) {
+              throw new Error(response.statusText)
+            }
+            return response.json()
+        })
     }
 
     public delete(entity: T): void {
