@@ -7,6 +7,7 @@ export interface IClient {
     lastname?: string;
     public?: boolean;
     birthdate?: string;
+    personId?: number;
 }
 export interface Client extends IClient { }
 

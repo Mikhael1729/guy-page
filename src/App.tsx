@@ -2,7 +2,7 @@ import { Button, Grid, createStyles } from "@material-ui/core";
 import { withStyles, Theme } from '@material-ui/core/styles';
 import * as React from 'react';
 import * as Styles from './styles/App.css';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { Fragment } from "react";
 import Header from "components/Header";
 import { IHeaderButton } from "models/HeaderButton";
@@ -72,7 +72,6 @@ class App extends React.Component<any, IAppState> {
                           exact={r.exactLink}
                           path={r.link}
                           render={({history}) => {
-                            // 
                             const Component = withHistory(r.component, history);
 
                             /* Adding specific properties */
@@ -82,6 +81,13 @@ class App extends React.Component<any, IAppState> {
                             }
                             else if (r.link==="/profile") {
                               return <Component email={this.state.currentUser.email}/>
+                            } 
+                            else if (r.link==="/") {
+                              if(this.state.currentUser.token) {
+                                return <Component />
+                              } else {
+                                return <Redirect to={{ pathname: '/login' }} />
+                              }
                             }
 
                             return <Component />
