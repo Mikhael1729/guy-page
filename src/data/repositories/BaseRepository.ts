@@ -1,7 +1,7 @@
 import { IRepository } from "./IRepository";
 
 export class BaseRepository<T> implements IRepository<T>{
-    private _context: string;
+    protected _context: string;
 
     constructor(context: string) {
         this._context = context;
