@@ -111,7 +111,7 @@ export default class Login extends React.Component<ILoginProps, ILoginState> {
       this.props.updateCurrentPerson(person);
   
       // Traveling to the next page.
-      this.props.history.push("/profile");
+      this.props.history.push("/");
     })
   }
 }
