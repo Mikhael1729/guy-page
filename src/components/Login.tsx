@@ -45,6 +45,7 @@ export default class Login extends React.Component<ILoginProps, ILoginState> {
         <Avatar 
           src={user_image}
           style={{  
+            marginTop: "40px",
             textAlign: "center",
             alignSelf: "center",
             width: "100px",

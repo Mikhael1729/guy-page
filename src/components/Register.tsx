@@ -58,6 +58,7 @@ class Register extends React.Component<IRegisterProps, IRegisterState> {
         <Avatar 
           src={user_image}
           style={{  
+            marginTop: "40px",
             textAlign: "center",
             alignSelf: "center",
             width: "100px",
