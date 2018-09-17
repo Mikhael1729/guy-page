@@ -8,7 +8,7 @@ import Header from "components/Header";
 import { IHeaderButton } from "models/HeaderButton";
 import Register from "components/Register";
 import Login from "components/Login";
-import Profile from "components/Profile";
+import Profile from "components/AddClient";
 import { withHistory } from "./components/WithHistory";
 import { Person as PersonModel, Person} from "models/Person";
 import { Home } from "./components/Home";
