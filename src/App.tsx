@@ -80,7 +80,7 @@ class App extends React.Component<any, IAppState> {
                               return <Component updateCurrentPerson={this.logIn}/>
                             }
                             else if (r.link==="/profile") {
-                              return <Component email={this.state.currentUser.email}/>
+                              return <Component email={this.state.currentUser.email} currentUserId={this.state.currentUser.id}/>
                             } 
                             else if (r.link==="/") {
                               if(this.state.currentUser.token) {
@@ -107,7 +107,7 @@ class App extends React.Component<any, IAppState> {
   private showOrHideNavBarElements() {
     const register:IHeaderButton = { component: Register, exactLink: true, label: "Register", link: "/register" };
     const login: IHeaderButton = { component: Login, exactLink: true, label: "Login", link: "/login" };
-    const profile: IHeaderButton = { component: Profile, exactLink: true, label: "Profile", link: "/profile"};
+    const profile: IHeaderButton = { component: Profile, exactLink: true, label: "Add client", link: "/addclient"};
     const logout: IHeaderButton = { component: <h1>h</h1>, exactLink: true, label: "Log out", link: "/", onClick: this.logOut};
 
     // Header buttons.
