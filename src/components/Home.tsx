@@ -8,10 +8,13 @@ import { ClientService } from "data/services/ClientService";
 // tslint:disable:variable-name
 
 export interface IHomeProps {
+    currentUserId: number;
 }
 
 export interface IHomeState {
     clients: ClientModel[];
+    clientsCount: number;
+    myClientsCount: number;
 }
 
 export class Home extends React.Component<IHomeProps, IHomeState> {
@@ -21,17 +24,28 @@ export class Home extends React.Component<IHomeProps, IHomeState> {
         super(props);
         
         this.state = {
-            clients: []
+            clients: [],
+            myClientsCount: 0,
+            clientsCount: 0
         }
+
+        this.clientService.count().then(response => console.log(response.count));
     }
 
     public componentWillMount() {
-        this.getAllClients().then(res => {
-            this.setState({ clients: res })
+        this.getAllClients().then(c => {
+            this.getAllClientsCount().then(c1 => {
+                this.getMyClients().then(c2 => {
+                    this.setState({ clients: c, clientsCount:c1, myClientsCount: c2 });
+                })  
+            })
         });
     }
 
     public render() {
+        let count: number = 0;
+        this.clientService.count().then(response => count = response.count);
+        
         return (
             <React.Fragment>
                 <h1>Home</h1>
@@ -42,14 +56,14 @@ export class Home extends React.Component<IHomeProps, IHomeState> {
                         <QuantityCard 
                             title="My clients quantity" 
                             backgroundColor="#E6E6E6"
-                            quantity={12}/>
+                            quantity={this.state.myClientsCount}/>
                     </Grid>
 
                     <Grid item={true} xs={6}>
                         <QuantityCard 
-                            title="My clients quantity" 
+                            title="All clients quantity" 
                             backgroundColor="#F0F0F0"
-                            quantity={12}/>
+                            quantity={this.state.clientsCount}/>
                     </Grid>
                 </Grid>
 
@@ -64,6 +78,16 @@ export class Home extends React.Component<IHomeProps, IHomeState> {
         const clients: ClientModel[] = (await this.clientService.getAll());
         console.log(clients);
         return clients;
+    }
+
+    private async getAllClientsCount () : Promise<number> {
+        const count: number = (await this.clientService.count()).count;
+        return count;
+    }
+
+    private async getMyClients (): Promise<number> {
+        const count: number = (await this.clientService.countByPersonId(this.props.currentUserId)).count;
+        return count;
     }
 
     private generateClients() : ClientModel[]{

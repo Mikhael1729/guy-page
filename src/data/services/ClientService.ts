@@ -6,4 +6,32 @@ export class ClientService extends BaseRepository<Client> implements IClientServ
     constructor(url: string) {
         super(url)
     }
+
+    public count() : Promise<{ count: number }>{
+        return fetch(this._context + '/count', {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }).then(response => {
+            if(!response.ok) {
+                throw new Error(response.statusText);
+            }
+            return response.json()
+        })
+    }
+
+    public countByPersonId(personId: number): Promise<{count: number}> {
+        return fetch(this._context + `/count?filter={"where":{"personId":"${personId}"}}`, {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }).then(response => {
+            if(!response.ok) {
+                throw new Error(response.statusText);
+            }
+            return response.json()
+        })
+    }
 }

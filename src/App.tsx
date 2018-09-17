@@ -84,7 +84,7 @@ class App extends React.Component<any, IAppState> {
                             } 
                             else if (r.link==="/") {
                               if(this.state.currentUser.token) {
-                                return <Component />
+                                return <Component currentUserId={this.state.currentUser.id}/>
                               } else {
                                 return <Redirect to={{ pathname: '/login' }} />
                               }
